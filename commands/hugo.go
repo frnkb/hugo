@@ -446,10 +446,9 @@ func watchConfig() {
 }
 
 func build(watches ...bool) error {
-
 	// Hugo writes the output to memory instead of the disk
 	// This is only used for benchmark testing. Cause the content is only visible
-	// in memory
+	// in memory.
 	if renderToMemory {
 		hugofs.SetDestination(new(afero.MemMapFs))
 		// Rendering to memoryFS, publish to Root regardless of publishDir.
@@ -473,6 +472,10 @@ func build(watches ...bool) error {
 		utils.CheckErr(NewWatcher(0))
 	}
 
+	// Remove non minified js/css files.
+	if viper.GetBool("RemoveNonMinified") {
+		RemoveNonMinified(helpers.AbsPathify(viper.GetString("PublishDir")))
+	}
 	return nil
 }
 
